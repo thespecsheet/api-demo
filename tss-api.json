@@ -1,0 +1,3770 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "API",
+    "description": "Set of ApiRequests for actual description in an openapi definition for external consumption.\n"
+  },
+  "paths": {
+    "/api/v1/batchUpdate": {
+      "post": {
+        "operationId": "batchUpdate",
+        "description": "Batch update of placement, booking and campaign data\n",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchUpdateReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessOrError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "TokenAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/batchDelete": {
+      "post": {
+        "operationId": "batchDelete",
+        "description": "Batch delete of placements, booking or campaign\n",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchDeleteReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessOrError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "TokenAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "TokenAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "Unit": {
+        "type": "object",
+        "description": "Empty Struct (Used mostly for Void RPC responses)",
+        "properties": {}
+      },
+      "BatchUpdateReq": {
+        "type": "object",
+        "description": "Request batch update/create of placements, campaigns and bookings",
+        "properties": {
+          "reqId": {
+            "type": "string"
+          },
+          "placements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiPlacement"
+            }
+          },
+          "campaigns": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiCampaign"
+            }
+          },
+          "bookings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiBooking"
+            }
+          }
+        }
+      },
+      "ApiPlacement": {
+        "type": "object",
+        "description": "An advertisement placement",
+        "properties": {
+          "identifier": {
+            "$ref": "#/components/schemas/ApiPlacementId"
+          },
+          "name": {
+            "$ref": "#/components/schemas/strings_StringNE"
+          },
+          "description": {
+            "$ref": "#/components/schemas/common_Notes"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "searchContent": {
+            "type": "string"
+          },
+          "category": {
+            "$ref": "#/components/schemas/db_PlacementCategory"
+          },
+          "originalSpecs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/common_UrlResource"
+            }
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/common_UrlResource"
+            }
+          },
+          "documents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/common_UrlResource"
+            }
+          },
+          "location": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/db_PlacementLocation"
+              }
+            ]
+          },
+          "specifications": {
+            "$ref": "#/components/schemas/artworkspec_Specifications"
+          },
+          "isDraft": {
+            "type": "boolean"
+          },
+          "isVerified": {
+            "type": "boolean"
+          },
+          "isDeprecated": {
+            "type": "boolean"
+          },
+          "deprecatedAt": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Instant"
+              }
+            ]
+          },
+          "activeStart": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LocalDate"
+              }
+            ]
+          },
+          "activeEnd": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LocalDate"
+              }
+            ]
+          },
+          "publicSearchable": {
+            "type": "boolean"
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/artworkspec_Attributes"
+          },
+          "version": {
+            "$ref": "#/components/schemas/db_Version"
+          },
+          "lastVerified": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Instant"
+              }
+            ]
+          }
+        },
+        "required": [
+          "identifier",
+          "name",
+          "description",
+          "category",
+          "specifications"
+        ]
+      },
+      "ApiPlacementId": {
+        "type": "string"
+      },
+      "strings_StringNE": {
+        "type": "string"
+      },
+      "common_Notes": {
+        "$ref": "#/components/schemas/strings_StringMD"
+      },
+      "strings_StringMD": {
+        "type": "string"
+      },
+      "db_PlacementCategory": {
+        "type": "string",
+        "enum": [
+          "AUDIO",
+          "BROADCAST",
+          "CINEMA",
+          "DISPLAY",
+          "NATIVE",
+          "ONLINE",
+          "DOOH",
+          "PRINT_OOH",
+          "OOH_TRANSIT",
+          "PRINT_MAGAZINE",
+          "PRINT_NEWSPAPER",
+          "RICHMEDIA",
+          "SEM",
+          "SOCIAL",
+          "VIDEO",
+          "OTHER"
+        ]
+      },
+      "common_UrlResource": {
+        "type": "object",
+        "description": "A Url/Datasource with name and notes",
+        "properties": {
+          "name": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/strings_StringNE"
+              }
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/common_DataOrigin"
+          },
+          "notes": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/common_Notes"
+              }
+            ]
+          },
+          "fileSize": {
+            "type": "number",
+            "nullable": true
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "common_DataOrigin": {
+        "description": "Choice of Data Source (URL only)",
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "url": {
+                "$ref": "#/components/schemas/common_Url"
+              }
+            },
+            "required": [
+              "url"
+            ]
+          }
+        ]
+      },
+      "common_Url": {
+        "type": "string"
+      },
+      "db_PlacementLocation": {
+        "type": "object",
+        "properties": {
+          "siteNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "direction": {
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/strings_StringML"
+              }
+            ]
+          },
+          "suburb": {
+            "type": "string",
+            "nullable": true
+          },
+          "postcode": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "country": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "strings_StringML": {
+        "type": "string"
+      },
+      "artworkspec_Specifications": {
+        "description": "Placement Specifications",
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "components": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/artworkspec_NamedAnnotated_kachemedia_specsheet_artworkspec_ArtworkSpec"
+                }
+              }
+            },
+            "required": [
+              "components"
+            ]
+          }
+        ]
+      },
+      "artworkspec_ArtworkSpec": {
+        "description": "Artwork Specification - one of a family of appropriate properties per media type",
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "digitalStatic": {
+                "$ref": "#/components/schemas/artworkspec_DigitalStaticMedia"
+              }
+            },
+            "required": [
+              "digitalStatic"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "animated": {
+                "$ref": "#/components/schemas/artworkspec_AnimatedMedia"
+              }
+            },
+            "required": [
+              "animated"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "html5": {
+                "$ref": "#/components/schemas/artworkspec_Html5Media"
+              }
+            },
+            "required": [
+              "html5"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "video": {
+                "$ref": "#/components/schemas/artworkspec_Video"
+              }
+            },
+            "required": [
+              "video"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "audio": {
+                "$ref": "#/components/schemas/artworkspec_Audio"
+              }
+            },
+            "required": [
+              "audio"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "copy": {
+                "$ref": "#/components/schemas/artworkspec_CopyMedia"
+              }
+            },
+            "required": [
+              "copy"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "newspaper": {
+                "$ref": "#/components/schemas/artworkspec_PrintNewspaper"
+              }
+            },
+            "required": [
+              "newspaper"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "magazine": {
+                "$ref": "#/components/schemas/artworkspec_PrintMagazine"
+              }
+            },
+            "required": [
+              "magazine"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "printOOH": {
+                "$ref": "#/components/schemas/artworkspec_PrintOOH"
+              }
+            },
+            "required": [
+              "printOOH"
+            ]
+          }
+        ]
+      },
+      "artworkspec_DigitalStaticMedia": {
+        "type": "object",
+        "properties": {
+          "dimensions": {
+            "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_DigitalMediaDimensions"
+          },
+          "maxFileSize": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_DataAmount"
+              }
+            ]
+          },
+          "safeZone": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_common_Unit"
+              }
+            ]
+          },
+          "resolution": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_DigitalResolution"
+              }
+            ]
+          },
+          "aspectRatios": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_VideoAspectRatios"
+              }
+            ]
+          },
+          "color": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_DigitalColorSpace"
+              }
+            ]
+          },
+          "border": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_Border"
+              }
+            ]
+          },
+          "formats": {
+            "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_StaticMediaFormat"
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/artworkspec_Attributes"
+          }
+        },
+        "required": [
+          "dimensions",
+          "formats"
+        ]
+      },
+      "artworkspec_DigitalMediaDimensions": {
+        "$ref": "#/components/schemas/artworkspec_VectorNamedAnnotated_kachemedia_specsheet_artworkspec_DigitalMediaDimension"
+      },
+      "artworkspec_DigitalMediaDimension": {
+        "type": "object",
+        "description": "Dimension property for Display media - Where combinations of retina/standard and expanded/collapsed are needed.",
+        "properties": {
+          "pixelDimension": {
+            "$ref": "#/components/schemas/artworkspec_PixelDimension"
+          },
+          "resolutionType": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_DimensionResolutionType"
+              }
+            ]
+          },
+          "sizeCase": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_DimensionSizeCase"
+              }
+            ]
+          }
+        },
+        "required": [
+          "pixelDimension"
+        ]
+      },
+      "artworkspec_PixelDimension": {
+        "type": "object",
+        "properties": {
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "width",
+          "height"
+        ]
+      },
+      "artworkspec_DimensionResolutionType": {
+        "description": "Dimension Resolution Type (standard or retina)",
+        "oneOf": [
+          {
+            "type": "string",
+            "enum": [
+              "standard",
+              "retina"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "other": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "other"
+            ]
+          }
+        ]
+      },
+      "artworkspec_DimensionSizeCase": {
+        "description": "Dimension size use-case (regular vs expanded or collapsed)",
+        "oneOf": [
+          {
+            "type": "string",
+            "enum": [
+              "regular",
+              "expanded",
+              "collapsed"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "other": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "other"
+            ]
+          }
+        ]
+      },
+      "artworkspec_VectorNamedAnnotated_kachemedia_specsheet_artworkspec_DigitalMediaDimension": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/artworkspec_NamedAnnotated_kachemedia_specsheet_artworkspec_DigitalMediaDimension"
+        }
+      },
+      "artworkspec_NamedAnnotated_kachemedia_specsheet_artworkspec_DigitalMediaDimension": {
+        "type": "object",
+        "description": "A value with an optional name and metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_DigitalMediaDimension"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_Metadata": {
+        "type": "object",
+        "properties": {
+          "notes": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/common_Notes"
+              }
+            ]
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/common_UrlResource"
+            }
+          }
+        }
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_DigitalMediaDimensions": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_DigitalMediaDimensions"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_DataAmount": {
+        "type": "object",
+        "description": "Amount of data / file size",
+        "properties": {
+          "amount": {
+            "type": "number"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/artworkspec_FileSizeUnit"
+          }
+        },
+        "required": [
+          "amount",
+          "unit"
+        ]
+      },
+      "artworkspec_FileSizeUnit": {
+        "type": "string",
+        "enum": [
+          "kb",
+          "mb",
+          "gb"
+        ]
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_DataAmount": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_DataAmount"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_Annotated_common_Unit": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/Unit"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_DigitalResolution": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/artworkspec_DigitalResolutionUnit"
+          }
+        },
+        "required": [
+          "amount",
+          "unit"
+        ]
+      },
+      "artworkspec_DigitalResolutionUnit": {
+        "description": "Digital Resolution",
+        "oneOf": [
+          {
+            "type": "string",
+            "enum": [
+              "DPI",
+              "PPI"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "other": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "other"
+            ]
+          }
+        ]
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_DigitalResolution": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_DigitalResolution"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_VideoAspectRatios": {
+        "type": "object",
+        "properties": {
+          "square": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "portrait_9_16": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "landscape_16_9": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "portrait_4_5": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "custom": {
+            "$ref": "#/components/schemas/artworkspec_VectorAnnotated_kachemedia_specsheet_artworkspec_CustomAspectRatio"
+          },
+          "other": {
+            "$ref": "#/components/schemas/artworkspec_VectorAnnotated_String"
+          }
+        }
+      },
+      "artworkspec_CustomAspectRatio": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "name",
+          "width",
+          "height"
+        ]
+      },
+      "artworkspec_VectorAnnotated_kachemedia_specsheet_artworkspec_CustomAspectRatio": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_CustomAspectRatio"
+        }
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_CustomAspectRatio": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_CustomAspectRatio"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_VectorAnnotated_String": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/artworkspec_Annotated_String"
+        }
+      },
+      "artworkspec_Annotated_String": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_VideoAspectRatios": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_VideoAspectRatios"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_DigitalColorSpace": {
+        "type": "object",
+        "description": "Color spaces",
+        "properties": {
+          "RGB": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "HEX": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          }
+        }
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_DigitalColorSpace": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_DigitalColorSpace"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_Border": {
+        "oneOf": [
+          {
+            "type": "string",
+            "enum": [
+              "singlePixel"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "other": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "other"
+            ]
+          }
+        ]
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_Border": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_Border"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_StaticMediaFormat": {
+        "type": "object",
+        "description": "Static media format",
+        "properties": {
+          "jpg": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_JPG"
+              }
+            ]
+          },
+          "bmp": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_BMP"
+              }
+            ]
+          },
+          "gif": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_GIF"
+              }
+            ]
+          },
+          "png": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_PNG"
+              }
+            ]
+          },
+          "eps": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_EPS"
+              }
+            ]
+          },
+          "ai": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_AI"
+              }
+            ]
+          },
+          "tiff": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_TIFF"
+              }
+            ]
+          },
+          "psdLayered": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_PSD"
+              }
+            ]
+          },
+          "psdFlattened": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_PSD"
+              }
+            ]
+          },
+          "svg": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_SVG"
+              }
+            ]
+          },
+          "other": {
+            "$ref": "#/components/schemas/artworkspec_VectorAnnotated_String"
+          }
+        }
+      },
+      "artworkspec_JPG": {
+        "type": "object",
+        "description": "JPG Specification details",
+        "properties": {}
+      },
+      "artworkspec_BMP": {
+        "type": "object",
+        "description": "BMP Specification details",
+        "properties": {}
+      },
+      "artworkspec_GIF": {
+        "type": "object",
+        "description": "GIF Specification details",
+        "properties": {
+          "transparency": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          }
+        }
+      },
+      "artworkspec_PNG": {
+        "type": "object",
+        "description": "PNG Specification details",
+        "properties": {
+          "transparency": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "png8": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_PNGFormat"
+              }
+            ]
+          },
+          "png24": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_PNGFormat"
+              }
+            ]
+          }
+        }
+      },
+      "artworkspec_PNGFormat": {
+        "type": "object",
+        "properties": {}
+      },
+      "artworkspec_EPS": {
+        "type": "object",
+        "description": "EPS Specification details",
+        "properties": {
+          "convertToOutline": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          }
+        }
+      },
+      "artworkspec_AI": {
+        "type": "object",
+        "properties": {
+          "convertToOutline": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          }
+        }
+      },
+      "artworkspec_TIFF": {
+        "type": "object",
+        "description": "TIFF Specification details",
+        "properties": {}
+      },
+      "artworkspec_PSD": {
+        "type": "object",
+        "properties": {
+          "psdExampleUrl": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/common_Url"
+              }
+            ]
+          }
+        }
+      },
+      "artworkspec_SVG": {
+        "type": "object",
+        "description": "SVG Specification details",
+        "properties": {}
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_StaticMediaFormat": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_StaticMediaFormat"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_Attributes": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/artworkspec_KeyValueAttribute"
+        }
+      },
+      "artworkspec_KeyValueAttribute": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "$ref": "#/components/schemas/common_Notes"
+          },
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "value"
+        ]
+      },
+      "artworkspec_AnimatedMedia": {
+        "type": "object",
+        "description": "Animated Media",
+        "properties": {
+          "dimensions": {
+            "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_DigitalMediaDimensions"
+          },
+          "durations": {
+            "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_Durations"
+          },
+          "loop": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_common_Unit"
+              }
+            ]
+          },
+          "loopCount": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_Word16"
+              }
+            ]
+          },
+          "endWithStaticFrame": {
+            "$ref": "#/components/schemas/artworkspec_Annotated_Bool"
+          },
+          "safeZone": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_common_Unit"
+              }
+            ]
+          },
+          "resolution": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_DigitalResolution"
+              }
+            ]
+          },
+          "color": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_RGBOnlyColorSpace"
+              }
+            ]
+          },
+          "border": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_Border"
+              }
+            ]
+          },
+          "formats": {
+            "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_AnimatedMediaFormat"
+          },
+          "maxFileSize": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_DataAmount"
+              }
+            ]
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/artworkspec_Attributes"
+          }
+        },
+        "required": [
+          "dimensions",
+          "durations",
+          "endWithStaticFrame",
+          "formats"
+        ]
+      },
+      "artworkspec_Durations": {
+        "$ref": "#/components/schemas/artworkspec_VectorNamedAnnotated_kachemedia_specsheet_artworkspec_Duration"
+      },
+      "artworkspec_Duration": {
+        "type": "object",
+        "properties": {
+          "hours": {
+            "type": "number",
+            "nullable": true
+          },
+          "minutes": {
+            "type": "number",
+            "nullable": true
+          },
+          "seconds": {
+            "type": "number",
+            "nullable": true
+          },
+          "milliSeconds": {
+            "type": "number",
+            "nullable": true
+          }
+        }
+      },
+      "artworkspec_VectorNamedAnnotated_kachemedia_specsheet_artworkspec_Duration": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/artworkspec_NamedAnnotated_kachemedia_specsheet_artworkspec_Duration"
+        }
+      },
+      "artworkspec_NamedAnnotated_kachemedia_specsheet_artworkspec_Duration": {
+        "type": "object",
+        "description": "A value with an optional name and metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_Duration"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_Durations": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_Durations"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_Annotated_Word16": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_Annotated_Bool": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_RGBOnlyColorSpace": {
+        "type": "object",
+        "description": "Color spaces",
+        "properties": {
+          "RGB": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          }
+        }
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_RGBOnlyColorSpace": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_RGBOnlyColorSpace"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_AnimatedMediaFormat": {
+        "type": "object",
+        "description": "Animated media format",
+        "properties": {
+          "gif": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_GIF"
+              }
+            ]
+          },
+          "other": {
+            "$ref": "#/components/schemas/artworkspec_VectorAnnotated_String"
+          }
+        }
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_AnimatedMediaFormat": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_AnimatedMediaFormat"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_Html5Media": {
+        "type": "object",
+        "description": "HTML Media Specification details",
+        "properties": {
+          "dimensions": {
+            "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_DigitalMediaDimensions"
+          },
+          "safeZone": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_common_Unit"
+              }
+            ]
+          },
+          "resolution": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_DigitalResolution"
+              }
+            ]
+          },
+          "color": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_DigitalColorSpace"
+              }
+            ]
+          },
+          "border": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_Border"
+              }
+            ]
+          },
+          "dataAmounts": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_DataAmounts"
+              }
+            ]
+          },
+          "formats": {
+            "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_Html5Formats"
+          },
+          "durations": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_Durations"
+              }
+            ]
+          },
+          "frameRate": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_FrameRate"
+              }
+            ]
+          },
+          "loop": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_common_Unit"
+              }
+            ]
+          },
+          "loopCount": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_Word16"
+              }
+            ]
+          },
+          "accepted3rdPartyVendors": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Attributes"
+              }
+            ]
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/artworkspec_Attributes"
+          }
+        },
+        "required": [
+          "dimensions",
+          "formats"
+        ]
+      },
+      "artworkspec_DataAmounts": {
+        "$ref": "#/components/schemas/artworkspec_VectorNamedAnnotated_kachemedia_specsheet_artworkspec_DataAmountProperty"
+      },
+      "artworkspec_DataAmountProperty": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "$ref": "#/components/schemas/artworkspec_DataAmount"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/artworkspec_DataAmountType"
+          }
+        },
+        "required": [
+          "amount",
+          "kind"
+        ]
+      },
+      "artworkspec_DataAmountType": {
+        "oneOf": [
+          {
+            "type": "string",
+            "enum": [
+              "total",
+              "initial",
+              "polite",
+              "userInitiated",
+              "adVerificationScripts",
+              "hostedSharedLibrary"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "other": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "other"
+            ]
+          }
+        ]
+      },
+      "artworkspec_VectorNamedAnnotated_kachemedia_specsheet_artworkspec_DataAmountProperty": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/artworkspec_NamedAnnotated_kachemedia_specsheet_artworkspec_DataAmountProperty"
+        }
+      },
+      "artworkspec_NamedAnnotated_kachemedia_specsheet_artworkspec_DataAmountProperty": {
+        "type": "object",
+        "description": "A value with an optional name and metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_DataAmountProperty"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_DataAmounts": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_DataAmounts"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_Html5Formats": {
+        "type": "object",
+        "description": "Html5 formats",
+        "properties": {
+          "static": {
+            "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_StaticMediaFormat"
+          },
+          "animated": {
+            "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_AnimatedMediaFormat"
+          },
+          "web": {
+            "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_WebMediaFormat"
+          },
+          "video": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_Html5Video"
+              }
+            ]
+          }
+        },
+        "required": [
+          "static",
+          "animated",
+          "web"
+        ]
+      },
+      "artworkspec_WebMediaFormat": {
+        "type": "object",
+        "properties": {
+          "HTML5": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "CSS": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "JS": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          }
+        }
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_WebMediaFormat": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_WebMediaFormat"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_Html5Video": {
+        "type": "object",
+        "properties": {
+          "video": {
+            "$ref": "#/components/schemas/artworkspec_Video"
+          }
+        },
+        "required": [
+          "video"
+        ]
+      },
+      "artworkspec_Video": {
+        "type": "object",
+        "properties": {
+          "dimensions": {
+            "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_DigitalMediaDimensions"
+          },
+          "orientation": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_MediaOrientation"
+              }
+            ]
+          },
+          "aspectRatios": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_VideoAspectRatios"
+              }
+            ]
+          },
+          "safeZone": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_common_Unit"
+              }
+            ]
+          },
+          "durations": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_Durations"
+              }
+            ]
+          },
+          "formats": {
+            "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_VideoFormat"
+          },
+          "codec": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_VideoCodec"
+              }
+            ]
+          },
+          "frameRate": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_FrameRate"
+              }
+            ]
+          },
+          "profile": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "profileLevel": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "bitrate": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_BitRate"
+              }
+            ]
+          },
+          "fieldRender": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "loop": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_common_Unit"
+              }
+            ]
+          },
+          "loopCount": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_Word16"
+              }
+            ]
+          },
+          "audio": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_VideoAudioSupport"
+              }
+            ]
+          },
+          "subtitles": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_common_Unit"
+              }
+            ]
+          },
+          "script": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_VideoScriptSupport"
+              }
+            ]
+          },
+          "dataAmounts": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_DataAmounts"
+              }
+            ]
+          },
+          "accepted3rdPartyVendors": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Attributes"
+              }
+            ]
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/artworkspec_Attributes"
+          }
+        },
+        "required": [
+          "dimensions",
+          "formats"
+        ]
+      },
+      "artworkspec_MediaOrientation": {
+        "type": "object",
+        "description": "Media Orientation",
+        "properties": {
+          "landscape": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "portrait": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "square": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "other": {
+            "$ref": "#/components/schemas/artworkspec_VectorAnnotated_String"
+          }
+        }
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_MediaOrientation": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_MediaOrientation"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_VideoFormat": {
+        "type": "object",
+        "description": "Video format",
+        "properties": {
+          "MP4": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "WebM": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "MOV": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "WMV": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "AVI": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "OGG": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "ThreeGP": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "FLV": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "other": {
+            "$ref": "#/components/schemas/artworkspec_VectorAnnotated_String"
+          }
+        }
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_VideoFormat": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_VideoFormat"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_VideoCodec": {
+        "type": "object",
+        "description": "Video codec",
+        "properties": {
+          "avc_h264": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "hevc_h265": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "mpeg2": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "mpeg4": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "divx": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "Webm_vp9": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "Webm_vp8": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "ProRes422": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "QuickTime": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "other": {
+            "$ref": "#/components/schemas/artworkspec_VectorAnnotated_String"
+          }
+        }
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_VideoCodec": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_VideoCodec"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_FrameRate": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/artworkspec_FrameRateUnit"
+          }
+        },
+        "required": [
+          "value",
+          "unit"
+        ]
+      },
+      "artworkspec_FrameRateUnit": {
+        "type": "string",
+        "enum": [
+          "perSecond"
+        ]
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_FrameRate": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_FrameRate"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_BitRate": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/artworkspec_BitRateUnit"
+          }
+        },
+        "required": [
+          "value",
+          "unit"
+        ]
+      },
+      "artworkspec_BitRateUnit": {
+        "type": "string",
+        "enum": [
+          "Mbps",
+          "Kbps"
+        ]
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_BitRate": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_BitRate"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_VideoAudioSupport": {
+        "type": "object",
+        "properties": {
+          "formats": {
+            "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_AudioFormat"
+          },
+          "decibels": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "audioBitrate": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_BitRate"
+              }
+            ]
+          },
+          "sampleRate": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_SampleRate"
+              }
+            ]
+          }
+        },
+        "required": [
+          "formats"
+        ]
+      },
+      "artworkspec_AudioFormat": {
+        "type": "object",
+        "description": "Audio format",
+        "properties": {
+          "WAV": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "AIFF": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "MP3": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "AAC": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "other": {
+            "$ref": "#/components/schemas/artworkspec_VectorAnnotated_String"
+          }
+        }
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_AudioFormat": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_AudioFormat"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_SampleRate": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/artworkspec_SampleRateUnit"
+          }
+        },
+        "required": [
+          "value",
+          "unit"
+        ]
+      },
+      "artworkspec_SampleRateUnit": {
+        "type": "string",
+        "enum": [
+          "kiloHertz"
+        ]
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_SampleRate": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_SampleRate"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_VideoAudioSupport": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_VideoAudioSupport"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_VideoScriptSupport": {
+        "type": "object",
+        "properties": {
+          "scriptFormat": {
+            "$ref": "#/components/schemas/artworkspec_VideoScriptFormat"
+          }
+        },
+        "required": [
+          "scriptFormat"
+        ]
+      },
+      "artworkspec_VideoScriptFormat": {
+        "type": "object",
+        "description": "See also VideoAspectRatios\nVideo Script format",
+        "properties": {
+          "VAST": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          },
+          "VPAID": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Unit"
+              }
+            ]
+          }
+        }
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_VideoScriptSupport": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_VideoScriptSupport"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_Html5Video": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_Html5Video"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_Html5Formats": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_Html5Formats"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_Audio": {
+        "type": "object",
+        "description": "Audio",
+        "properties": {
+          "durations": {
+            "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_Durations"
+          },
+          "formats": {
+            "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_AudioFormat"
+          },
+          "codecs": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_AudioCodecs"
+              }
+            ]
+          },
+          "bitrate": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_BitRate"
+              }
+            ]
+          },
+          "sampleRate": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_SampleRate"
+              }
+            ]
+          },
+          "decibels": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "maxFileSize": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_DataAmount"
+              }
+            ]
+          },
+          "adServing": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "tracking": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/artworkspec_Attributes"
+          }
+        },
+        "required": [
+          "durations",
+          "formats"
+        ]
+      },
+      "artworkspec_AudioCodecs": {
+        "$ref": "#/components/schemas/artworkspec_VectorNamedAnnotated_String"
+      },
+      "artworkspec_VectorNamedAnnotated_String": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/artworkspec_NamedAnnotated_String"
+        }
+      },
+      "artworkspec_NamedAnnotated_String": {
+        "type": "object",
+        "description": "A value with an optional name and metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_AudioCodecs": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_AudioCodecs"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_CopyMedia": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_CopyMediaTextSpecs"
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/artworkspec_Attributes"
+          }
+        },
+        "required": [
+          "text"
+        ]
+      },
+      "artworkspec_CopyMediaTextSpecs": {
+        "$ref": "#/components/schemas/artworkspec_VectorNamedAnnotated_kachemedia_specsheet_artworkspec_CopyMediaTextSpec"
+      },
+      "artworkspec_CopyMediaTextSpec": {
+        "type": "object",
+        "properties": {
+          "minCharacters": {
+            "type": "number",
+            "nullable": true
+          },
+          "maxCharacters": {
+            "type": "number",
+            "nullable": true
+          },
+          "maxFileSize": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_DataAmount"
+              }
+            ]
+          }
+        }
+      },
+      "artworkspec_VectorNamedAnnotated_kachemedia_specsheet_artworkspec_CopyMediaTextSpec": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/artworkspec_NamedAnnotated_kachemedia_specsheet_artworkspec_CopyMediaTextSpec"
+        }
+      },
+      "artworkspec_NamedAnnotated_kachemedia_specsheet_artworkspec_CopyMediaTextSpec": {
+        "type": "object",
+        "description": "A value with an optional name and metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_CopyMediaTextSpec"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_CopyMediaTextSpecs": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_CopyMediaTextSpecs"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_PrintNewspaper": {
+        "type": "object",
+        "properties": {
+          "dimension": {
+            "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintDimensions"
+          },
+          "trim": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintDimensions"
+              }
+            ]
+          },
+          "additionalPrintDimensions": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_AdditionalPrintDimensions"
+              }
+            ]
+          },
+          "textSafeArea": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintBorderDimensions"
+              }
+            ]
+          },
+          "textFreeGutter": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "bleed": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintBorderDimensions"
+              }
+            ]
+          },
+          "finishedTrimBleed": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintDimensions"
+              }
+            ]
+          },
+          "resolution": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintResolution"
+              }
+            ]
+          },
+          "colourProfile": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "separationProfile": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "inkWeightCoverage": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "blackInkLimit": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "dotGain": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "highlightSet": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "formats": {
+            "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintMediaFormat"
+          },
+          "maxFileSize": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_DataAmount"
+              }
+            ]
+          },
+          "font": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "spread": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "placementInNewspaper": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/artworkspec_Attributes"
+          }
+        },
+        "required": [
+          "dimension",
+          "formats"
+        ]
+      },
+      "artworkspec_PrintDimensions": {
+        "type": "object",
+        "properties": {
+          "height": {
+            "$ref": "#/components/schemas/artworkspec_PrintDimension"
+          },
+          "width": {
+            "$ref": "#/components/schemas/artworkspec_PrintDimension"
+          }
+        },
+        "required": [
+          "height",
+          "width"
+        ]
+      },
+      "artworkspec_PrintDimension": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/artworkspec_DimensionUnit"
+          }
+        },
+        "required": [
+          "value",
+          "unit"
+        ]
+      },
+      "artworkspec_DimensionUnit": {
+        "type": "string",
+        "enum": [
+          "m",
+          "cm",
+          "mm"
+        ]
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintDimensions": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_PrintDimensions"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_AdditionalPrintDimensions": {
+        "$ref": "#/components/schemas/artworkspec_VectorNamedAnnotated_kachemedia_specsheet_artworkspec_PrintDimensions"
+      },
+      "artworkspec_VectorNamedAnnotated_kachemedia_specsheet_artworkspec_PrintDimensions": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/artworkspec_NamedAnnotated_kachemedia_specsheet_artworkspec_PrintDimensions"
+        }
+      },
+      "artworkspec_NamedAnnotated_kachemedia_specsheet_artworkspec_PrintDimensions": {
+        "type": "object",
+        "description": "A value with an optional name and metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_PrintDimensions"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_AdditionalPrintDimensions": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_AdditionalPrintDimensions"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_PrintBorderDimensions": {
+        "type": "object",
+        "properties": {
+          "top": {
+            "$ref": "#/components/schemas/artworkspec_PrintDimension"
+          },
+          "left": {
+            "$ref": "#/components/schemas/artworkspec_PrintDimension"
+          },
+          "right": {
+            "$ref": "#/components/schemas/artworkspec_PrintDimension"
+          },
+          "bottom": {
+            "$ref": "#/components/schemas/artworkspec_PrintDimension"
+          }
+        },
+        "required": [
+          "top",
+          "left",
+          "right",
+          "bottom"
+        ]
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintBorderDimensions": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_PrintBorderDimensions"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_PrintResolution": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/artworkspec_PrintResolutionUnit"
+          }
+        },
+        "required": [
+          "amount",
+          "unit"
+        ]
+      },
+      "artworkspec_PrintResolutionUnit": {
+        "description": "Print Resolution",
+        "oneOf": [
+          {
+            "type": "string",
+            "enum": [
+              "DPI",
+              "LPI"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "other": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "other"
+            ]
+          }
+        ]
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintResolution": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_PrintResolution"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_PrintMediaFormat": {
+        "type": "object",
+        "properties": {
+          "pdf": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_PDF"
+              }
+            ]
+          },
+          "eps": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_EPS"
+              }
+            ]
+          },
+          "ai": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_AI"
+              }
+            ]
+          },
+          "indd": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_INDD"
+              }
+            ]
+          },
+          "psd": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_PSD"
+              }
+            ]
+          },
+          "quarkXPress": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_QuarkXPress"
+              }
+            ]
+          },
+          "other": {
+            "$ref": "#/components/schemas/artworkspec_VectorAnnotated_String"
+          }
+        }
+      },
+      "artworkspec_PDF": {
+        "type": "object",
+        "description": "PDF Specification details",
+        "properties": {}
+      },
+      "artworkspec_INDD": {
+        "type": "object",
+        "description": "INDD Specification details",
+        "properties": {}
+      },
+      "artworkspec_QuarkXPress": {
+        "type": "object",
+        "description": "QuarkXPress Specification details",
+        "properties": {}
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintMediaFormat": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_PrintMediaFormat"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_PrintMagazine": {
+        "type": "object",
+        "properties": {
+          "trim": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintDimensions"
+              }
+            ]
+          },
+          "design": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintDimensions"
+              }
+            ]
+          },
+          "textSafeArea": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintBorderDimensions"
+              }
+            ]
+          },
+          "bleed": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintBorderDimensions"
+              }
+            ]
+          },
+          "finishedTrimBleed": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintDimensions"
+              }
+            ]
+          },
+          "textFreeGutter": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "resolution": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintResolution"
+              }
+            ]
+          },
+          "colourProfile": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "separationProfile": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "inkWeightCoverage": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "formats": {
+            "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintMediaFormat"
+          },
+          "font": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "scaling": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_Word16"
+              }
+            ]
+          },
+          "paperType": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "finish": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "binding": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "placementInMagazine": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "maxFileSize": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_DataAmount"
+              }
+            ]
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/artworkspec_Attributes"
+          }
+        },
+        "required": [
+          "trim",
+          "design",
+          "formats"
+        ]
+      },
+      "artworkspec_PrintOOH": {
+        "type": "object",
+        "properties": {
+          "artworkDimension": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintDimensionOptions"
+              }
+            ]
+          },
+          "artworkBleed": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintBorderDimensions"
+              }
+            ]
+          },
+          "artworkScale": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "visualSafeArea": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_common_Unit"
+              }
+            ]
+          },
+          "physicalDimension": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintDimensionOptions"
+              }
+            ]
+          },
+          "physicalBleed": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintBorderDimensions"
+              }
+            ]
+          },
+          "finishedEdgedDimensions": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "edging": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintBorderDimensions"
+              }
+            ]
+          },
+          "illumination": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_Illumination"
+              }
+            ]
+          },
+          "install": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "formats": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintMediaFormat"
+              }
+            ]
+          },
+          "maxFileSize": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_DataAmount"
+              }
+            ]
+          },
+          "resolution": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintResolution"
+              }
+            ]
+          },
+          "font": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "colourProfile": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "blackSpecification": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_String"
+              }
+            ]
+          },
+          "materialAttributes": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Attributes"
+              }
+            ]
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/artworkspec_Attributes"
+          }
+        }
+      },
+      "artworkspec_PrintDimensionOptions": {
+        "type": "object",
+        "properties": {
+          "visualSize": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintDimensions"
+              }
+            ]
+          },
+          "finishSize": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintDimensions"
+              }
+            ]
+          }
+        }
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_PrintDimensionOptions": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_PrintDimensionOptions"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_Illumination": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "backlit": {
+                "$ref": "#/components/schemas/artworkspec_Backlit"
+              }
+            },
+            "required": [
+              "backlit"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "frontlit": {
+                "$ref": "#/components/schemas/artworkspec_Frontlit"
+              }
+            },
+            "required": [
+              "frontlit"
+            ]
+          }
+        ]
+      },
+      "artworkspec_Backlit": {
+        "type": "object",
+        "properties": {}
+      },
+      "artworkspec_Frontlit": {
+        "type": "object",
+        "properties": {}
+      },
+      "artworkspec_Annotated_kachemedia_specsheet_artworkspec_Illumination": {
+        "type": "object",
+        "description": "A value - optionally with metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_Illumination"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "artworkspec_NamedAnnotated_kachemedia_specsheet_artworkspec_ArtworkSpec": {
+        "type": "object",
+        "description": "A value with an optional name and metadata",
+        "properties": {
+          "metadata": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/artworkspec_Metadata"
+              }
+            ]
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "value": {
+            "$ref": "#/components/schemas/artworkspec_ArtworkSpec"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "Instant": {
+        "type": "number"
+      },
+      "LocalDate": {
+        "type": "string"
+      },
+      "db_Version": {
+        "type": "number"
+      },
+      "ApiCampaign": {
+        "type": "object",
+        "description": "A Campaign / Contract.",
+        "properties": {
+          "campaignIdentifier": {
+            "$ref": "#/components/schemas/ApiCampaignId"
+          },
+          "client": {
+            "type": "string"
+          },
+          "campaignName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "campaignIdentifier",
+          "client"
+        ]
+      },
+      "ApiCampaignId": {
+        "type": "string"
+      },
+      "ApiBooking": {
+        "type": "object",
+        "description": "A placement booked at a date in a campaign",
+        "properties": {
+          "bookingIdentifier": {
+            "$ref": "#/components/schemas/ApiBookingId"
+          },
+          "placementIdentifier": {
+            "$ref": "#/components/schemas/ApiPlacementId"
+          },
+          "campaignIdentifier": {
+            "$ref": "#/components/schemas/ApiCampaignId"
+          },
+          "liveDate": {
+            "$ref": "#/components/schemas/LocalDate"
+          },
+          "endDate": {
+            "$ref": "#/components/schemas/LocalDate"
+          }
+        },
+        "required": [
+          "bookingIdentifier",
+          "placementIdentifier",
+          "campaignIdentifier",
+          "liveDate",
+          "endDate"
+        ]
+      },
+      "ApiBookingId": {
+        "type": "string"
+      },
+      "SuccessOrError": {
+        "description": "Basic success or unspecified error response.",
+        "oneOf": [
+          {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "error": {
+                "$ref": "#/components/schemas/Unit"
+              }
+            },
+            "required": [
+              "error"
+            ]
+          }
+        ]
+      },
+      "BatchDeleteReq": {
+        "type": "object",
+        "description": "Request batch update/create of placements, campaigns and bookings",
+        "properties": {
+          "reqId": {
+            "type": "string"
+          },
+          "placements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiPlacementId"
+            }
+          },
+          "campaigns": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiCampaignId"
+            }
+          },
+          "bookings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiBookingId"
+            }
+          }
+        }
+      }
+    }
+  }
+}

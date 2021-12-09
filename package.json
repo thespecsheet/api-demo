@@ -1,0 +1,27 @@
+{
+  "name": "specsheet-api-demo",
+  "version": "1.0.0",
+  "description": "app.thespecsheet.com api demo",
+  "main": "index.js",
+  "repository": "git@github.com:thespecsheet/api-demo.git",
+  "author": "The Specsheet",
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "@types/node": "^16.11.12",
+    "@types/node-fetch": "2",
+    "openapi-typescript": "^4.4.0",
+    "prettier": "^2.5.1",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.2"
+  },
+  "scripts": {
+    "generate-ts": "ts-node generate-api.ts",
+    "demo-api": "ts-node demo-api.ts",
+    "prettier:fix": "prettier --write ."
+  },
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "node-fetch": "2"
+  }
+}
