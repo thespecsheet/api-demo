@@ -9,6 +9,7 @@ type TssCampaign = api.components["schemas"]["ApiCampaign"];
 type TssPlacement = api.components["schemas"]["ApiPlacement"];
 type TssBooking = api.components["schemas"]["ApiBooking"];
 
+/// Provides an example sample campaign with 2x bookings and 2x placements
 function makeSampleCampaignPlacementsBookings() : CampaignsPlacementsBookings {
 
   const campaign : TssCampaign = {
@@ -81,9 +82,12 @@ function makeSampleCampaignPlacementsBookings() : CampaignsPlacementsBookings {
                     },
                   }
                 },
+                
+                // illumination: null,   // no illumination
                 illumination: {
                   value: {
-                    backlit: {}
+                    //backlit: {}  OR
+                    frontlit: {}
                   }
                 }
               }
@@ -231,16 +235,22 @@ function makeSampleCampaignPlacementsBookings() : CampaignsPlacementsBookings {
   }
 }
 
+/// Fetch to get campaigns placements and bookings
+async function getCampaignsPlacementsBookings() : Promise<CampaignsPlacementsBookings> {
+  // demo with sample data:
+  return makeSampleCampaignPlacementsBookings();
+} 
+
 async function main() {
+  // setup for the API auth:
   const cfg = config();
   const apiService = new ApiService({authToken: cfg.TSS_AUTHKEY, url: cfg.TSS_SERVER});
 
-  const sampleData = makeSampleCampaignPlacementsBookings();
-
-  const resp = await apiService.batchUpdate({
-    reqId: 'req-uuid-123132',
-    ...sampleData
-  });
+  // get the update of campaigns, placements and bookings
+  const campaignsPlacementsBookings = await getCampaignsPlacementsBookings();
+  
+  // calling the API:
+  const resp = await apiService.batchUpdate(campaignsPlacementsBookings);
   if(resp !== 'success') {
     throw new Error(JSON.stringify(resp));
   }
